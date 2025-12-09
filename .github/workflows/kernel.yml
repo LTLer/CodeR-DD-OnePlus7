@@ -1,4 +1,4 @@
-name: Build Nethunter Kernel V4 - YAAP16
+name: Build Nethunter Kernel V4
 
 on:
   push:
@@ -10,88 +10,49 @@ jobs:
   build_kernel:
     runs-on: ubuntu-22.04
     env:
-      KERNEL_NAME: "OnePlus7-Nethunter-V4"
-      DEVICE: "OnePlus7"
-      ANYKERNEL_DIR: "AnyKernel3"
-      CLANG_VERSION: "16.0.7"
-      CLANG_URL: "https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.7/clang+llvm-16.0.7-x86_64-linux-gnu-ubuntu-22.04.tar.xz"
+      KERNEL_DIR: ${{ github.workspace }}
+      CLANG_VERSION: "16"
 
     steps:
-      # 1️⃣ 检出代码
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
-      # 2️⃣ 安装依赖
-      - name: Install dependencies
+      - name: Update & install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y build-essential bc bison flex libssl-dev libncurses-dev curl wget unzip xz-utils python3 python3-pip python3-venv python3-distutils git ccache libelf-dev
+          sudo apt update -y
+          sudo apt upgrade -y
+          sudo apt install -y \
+            bc bison build-essential flex xz-utils curl \
+            libncurses-dev libssl-dev python3 python3-distutils \
+            python3-pip python3-venv git unzip ccache libelf-dev libhiredis0.14 clang-16 lld-16
+
+      - name: Set Python environment
+        run: |
           python3 -m pip install --upgrade pip
 
-      # 3️⃣ 下载并解压 Clang
-      - name: Setup Clang
+      - name: Setup Clang environment
         run: |
-          mkdir -p clang
-          curl -L $CLANG_URL -o clang.tar.xz
-          tar -xf clang.tar.xz -C clang
-          export PATH=$PWD/clang/clang+llvm-16.0.7-x86_64-linux-gnu-ubuntu-22.04/bin:$PATH
+          export CC=clang-16
+          export CXX=clang++-16
+          echo "Clang path: $(which clang-16)"
 
-      # 4️⃣ 设置构建环境
-      - name: Setup environment
-        run: |
-          export ARCH=arm64
-          export SUBARCH=arm64
-          export KBUILD_BUILD_USER="LTLer"
-          export KBUILD_BUILD_HOST="GitHub"
-          export PATH=$PWD/clang/clang+llvm-16.0.7-x86_64-linux-gnu-ubuntu-22.04/bin:$PATH
-          mkdir -p out
-
-      # 5️⃣ 配置内核 (启用 KernalSU + LXC 支持)
-      - name: Kernel config
-        run: |
-          make O=out $DEVICE_defconfig
-          # 开启 KernalSU 支持
-          scripts/config --file out/.config \
-            --enable CONFIG_KERNFS_SU \
-            --enable CONFIG_SUPERUSER
-          # 开启 LXC 容器支持
-          scripts/config --file out/.config \
-            --enable CONFIG_NAMESPACES \
-            --enable CONFIG_CGROUPS \
-            --enable CONFIG_CGROUP_DEVICE \
-            --enable CONFIG_CGROUP_FREEZER \
-            --enable CONFIG_CGROUP_PIDS \
-            --enable CONFIG_MEMCG \
-            --enable CONFIG_MEMCG_SWAP \
-            --enable CONFIG_VETH \
-            --enable CONFIG_BRIDGE
-          # 保存配置
-          yes "" | make O=out oldconfig
-
-      # 6️⃣ 编译内核
       - name: Build Kernel
+        working-directory: ${{ github.workspace }}
         run: |
-          make -j$(nproc) O=out \
-            CC=clang \
-            LD=ld.lld \
-            AR=llvm-ar \
-            NM=llvm-nm \
-            OBJCOPY=llvm-objcopy \
-            OBJDUMP=llvm-objdump \
-            STRIP=llvm-strip \
-            CROSS_COMPILE=aarch64-linux-gnu-
+          # Example: build using make, replace with your exact target
+          make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+          make -j$(nproc) O=out ARCH=arm64 CC=clang
 
-      # 7️⃣ 打包 AnyKernel3
       - name: Package AnyKernel3
+        working-directory: ${{ github.workspace }}/AnyKernel3
         run: |
-          mkdir -p AnyKernel3
-          cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-          cd AnyKernel3
-          zip -r ../${KERNEL_NAME}.zip *
-
-      # 8️⃣ 上传构建产物
-      - name: Upload kernel zip
+          cp ${{ github.workspace }}/out/arch/arm64/boot/Image.gz-dtb .
+          zip -r Nethunter-Kernel-V4.zip ./*
+          
+      - name: Upload Kernel Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${KERNEL_NAME}.zip
-          path: ${KERNEL_NAME}.zip
+          name: Nethunter-Kernel-V4
+          path: ${{ github.workspace }}/AnyKernel3/Nethunter-Kernel-V4.zip

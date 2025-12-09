@@ -99,6 +99,11 @@ jobs:
                         gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
 
       # Initialize ccache
+      - name: Set cross-compile vars
+  run: |
+    echo "ARCH=arm64" >> $GITHUB_ENV
+    echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+    echo "CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
       - name: 🚄 Setup ccache
         if: ${{ env.ENABLE_CCACHE == 'true' }}
         id: hash

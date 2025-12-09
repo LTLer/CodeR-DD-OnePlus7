@@ -32,7 +32,11 @@ jobs:
       - name: ⏰ Set builddate
         id: generate-builddate
         run: echo "BUILDDATE=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-
+      - name: Set cross-compile vars
+     run: |
+     echo "ARCH=arm64" >> $GITHUB_ENV
+     echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+     echo "CROSS_COMPILE_ARM32=arm-linux-gnueabi-" >> $GITHUB_ENV
   Build-Kernel:
     name: "🐎 Build kernel"
     runs-on: ubuntu-latest

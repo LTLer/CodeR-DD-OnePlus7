@@ -202,7 +202,7 @@ jobs:
           ARCH=$(echo $PARAMS | jq -r ".ARCH")
           CC=$(echo $PARAMS | jq -r ".CC")
 
-          args="-j${{ env.THREAD }} O=${{ env.OUT_DIR }} ARCH=$ARCH"
+          args="-j${{ env.THREAD }} O=${{ env.OUT_DIR }} ARCH=$ARCH" CC=${{ github.workspace }}/clang/clang-r536225/bin/clang LD=ld
           if [ -n "$CC" ]; then
 
             if [[ "$CC" == *"/"* ]]; then
@@ -215,8 +215,7 @@ jobs:
               args="$args CC=$CC"
             fi
           fi
-          # 添加 LLD 和 LLVM 参数
-            args="$args LD=ld.lld LLVM=1"
+         
           while read -r externalCommand; do
             key=$(echo "$externalCommand" | cut -d= -f1)
             value=$(echo "$externalCommand" | cut -d= -f2)
@@ -323,7 +322,7 @@ jobs:
           echo "🤔 PATH Variable: $PATH"
           export KBUILD_BUILD_HOST=dammer
           export KBUILD_BUILD_USER=dammer
-          export LLVM_REGALLOC_EA=0   # Clang16 regalloc bug workaround
+         
           make ${{ env.ARGS }} ${{ env.KERNEL_DEFCONFIG_PATH }}
           make ${{ env.ARGS }}
           # tree ${{ env.OUT_DIR }}

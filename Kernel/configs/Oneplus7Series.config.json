@@ -10,13 +10,13 @@
  "toolchains": [
   {
     "name": "clang",
-    "url": "https://github.com/JeyKul/clang-r547379/releases/download/clang/linux-x86-refs_heads_main-clang-r547379.tar.gz",
+    "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz",
     "extract": true,
     "binaryEnv": [
       "clang-r547379/bin"
     ]
   }
-],
+]，
     "enableCcache": true,
     "params": {
       "ARCH": "arm64",

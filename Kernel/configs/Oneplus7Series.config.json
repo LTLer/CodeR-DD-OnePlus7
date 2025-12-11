@@ -6,7 +6,7 @@
       "branch": "sixteen",
       "device": "Oneplus7Series",
       "defconfig": "gulch_defconfig"
-     },
+    },
     "toolchains": [
       {
         "repo": "https://github.com/JeyKul/clang-r547379/releases/download/clang/linux-x86-refs_heads_main-clang-r547379.tar.gz",
@@ -40,17 +40,18 @@
       }
     },
     "AnyKernel3": {
-        "use": true,
-        "release": true,
-        "custom": {
-          "repo": "https://github.com/internetuser111/AnyKernel3",
-          "branch": "op7-nh"
-        }
-      },
-      "enableKernelSU": true,
-      "enableLXC": true
-    }
+      "use": true,
+      "release": true,
+      "custom": {
+        "repo": "https://github.com/internetuser111/AnyKernel3",
+        "branch": "op7-nh"
+      }
+    },
+    "enableKernelSU": true,
+    "enableLXC": true
+  }
 ]
+
 
 [
   {

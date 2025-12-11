@@ -9,12 +9,12 @@
     },
   "toolchains": [
   {
-    "repo": "https://github.com/anhdat1024/platform_prebuilts_clang_host_linux-x86_r547379",
-    "branch": "android-16.0.0_r1",
+    "repo": "https://github.com/rankalpha/crdroid_android_prebuilts_clang_host_linux-x86_clang-r536225",
+    "branch": "15.0",
     "name": "clang",
     "extract": false,
     "binaryEnv": [
-      "clang-r547379/bin"
+      "clang-r536225/bin"
     ]
   }
 ]，

@@ -9,11 +9,11 @@
     },
     "toolchains": [
       {
-  "repo": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86",
-  "branch": "refs/heads/main",
-  "name": "clang",
-  "binaryEnv": [
-    "clang-r547379/bin"
+   "repo": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86",
+      "branch": "main",
+      "name": "clang",
+      "binaryEnv": [
+        "clang-r547379/bin"
   ]
       }
     ],
